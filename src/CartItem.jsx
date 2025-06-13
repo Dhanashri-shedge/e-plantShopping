@@ -19,18 +19,50 @@ const CartItem = ({ onContinueShopping }) => {
 
 
   const handleIncrement = (item) => {
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
-
+  
   const handleDecrement = (item) => {
-   
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+    } else {
+      dispatch(removeItem({ name: item.name }));
+    }
   };
+  
 
   const handleRemove = (item) => {
+    dispatch(removeItem({ name: item.name }));
   };
+  
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product));
+  };
+  const isInCart = cartItems.some(item => item.name === product.name);
+
+  <button
+    onClick={() => handleAddToCart(product)}
+    disabled={isInCart}
+  >
+    {isInCart ? 'Added to Cart' : 'Add to Cart'}
+  </button>
+const calculateTotalQuantity = () => {
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+  const calculateSubtotal = (item) => {
+    const price = parseFloat(item.cost.substring(1));
+    return price * item.quantity;
+  };
+  
+      
+  
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    const unitPrice = parseFloat(item.cost.substring(1)); // Removes "$" and converts to float
+    return unitPrice * item.quantity;
   };
+  
 
   return (
     <div className="cart-container">
